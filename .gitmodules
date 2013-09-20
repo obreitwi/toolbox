@@ -1,6 +1,8 @@
 [submodule "vim"]
 	path = vim
 	url = git@github.com:obreitwi/dot_vim.git
+	branch = master
 [submodule "zsh"]
 	path = zsh
 	url = git@github.com:obreitwi/dot_zsh.git
+	branch = master
