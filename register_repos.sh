@@ -5,7 +5,7 @@ URL=$1
 FOLDER=$2
 git clone $URL $FOLDER
 mr register $FOLDER
-mr config $FOLDER update="git stash && git pull --rebase && git stash pop"
+mr config $FOLDER update="if [[ \$(git status --porcelain | grep -v '^\?\?' | wc -l) -gt 0 ]]; then git stash && git pull --rebase && git stash pop; else git pull; fi"
 }
 
 touch .mrconfig
