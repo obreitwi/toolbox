@@ -11,7 +11,9 @@ mr config $FOLDER update="if [[ \$(git status --porcelain | grep -v '^\?\?' | wc
 touch .mrconfig
 
 TRUSTFILE=~/.mrtrust
-echo "$(pwd)/.mrconfig" >> $TRUSTFILE
+CONFIGLOCATION="$(pwd)/.mrconfig" 
+sed -i "\\:$CONFIGLOCATION:d" $TRUSTFILE
+echo "$CONFIGLOCATION" >> $TRUSTFILE
 
 register_repo git@github.com:obreitwi/pydemx.git pydemx
 register_repo git@github.com:obreitwi/dot_vim.git vim
