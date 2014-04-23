@@ -16,6 +16,14 @@ __doc__ = \
         {prgm} -h | --help
         {prgm} --version
 
+    Receives a bunch of FILENAMEs and sorts them according to the numbers
+    contained in key-number pairs in the filename. A pair has the form
+    <KEY>_<NUM>. Several pairs are conjoined by "-". NUM can be integers or
+    floats (in regular or scientific notation).
+
+    This script was written to sort the result-plots of parameter-sweeps
+    in different orders before viewing them.
+
     Options:
         -h --help         Show this help.
 
