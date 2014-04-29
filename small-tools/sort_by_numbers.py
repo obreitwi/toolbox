@@ -11,10 +11,10 @@ import os.path as osp
 
 __doc__ = \
 """
-    Usage:
-        {prgm} [-R] [-f KEY]... [-l KEY]... [-r KEY]... FILENAME ...
-        {prgm} -h | --help
-        {prgm} --version
+Usage:
+    {prgm} [-R] [-f KEY]... [-l KEY]... [-r KEY]... FILENAME...
+    {prgm} -h | --help
+    {prgm} --version
 
     Receives a bunch of FILENAMEs and sorts them according to the numbers
     contained in key-number pairs in the filename. A pair has the form
@@ -24,19 +24,19 @@ __doc__ = \
     This script was written to sort the result-plots of parameter-sweeps
     in different orders before viewing them.
 
-    Options:
-        -h --help         Show this help.
+Options:
+    -h --help         Show this help.
 
-        --version         Show version.
+    --version         Show version.
 
-        -r --reverse KEY  Order KEY in reverse.
+    -r --reverse KEY  Order KEY in reverse.
 
-        -R --reverse-all  Order all keys reverse. If -r is specified, those
-                          keys will not be sorted in reverse.
+    -R --reverse-all  Order all keys reverse. If -r is specified, those
+                      keys will not be sorted in reverse.
 
-        -f --first KEY    Sort by KEY first (in order of specification).
+    -f --first KEY    Sort by KEY first (in order of specification).
 
-        -l --last KEY     Sort by KEY last (in order of specification).
+    -l --last KEY     Sort by KEY last (in order of specification).
 
 """.format(prgm=osp.basename(sys.argv[0]))
 
