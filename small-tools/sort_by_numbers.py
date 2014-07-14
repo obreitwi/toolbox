@@ -8,11 +8,12 @@ import itertools as it
 from docopt import docopt
 import re
 import os.path as osp
+from pprint import pprint
 
 __doc__ = \
 """
 Usage:
-    {prgm} [-R] [-f KEY]... [-l KEY]... [-r KEY]... FILENAME...
+    {prgm} [-v] [-R] [-f KEY]... [-l KEY]... [-r KEY]... FILENAME...
     {prgm} -h | --help
     {prgm} --version
 
@@ -29,6 +30,8 @@ Options:
 
     --version         Show version.
 
+    -v --verbose      Be verbose
+
     -r --reverse KEY  Order KEY in reverse.
 
     -R --reverse-all  Order all keys reverse. If -r is specified, those
@@ -40,14 +43,18 @@ Options:
 
 """.format(prgm=osp.basename(sys.argv[0]))
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
+
 
 def sorted_filename(filenames, first=[], last=[],
-        reverse=[], reverse_all=False):
-    matcher = re.compile("([^/]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
+        reverse=[], reverse_all=False, verbose=False):
+    matcher = re.compile("([^-/_]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
 
-    fn_to_nums = {fn: {k: float(v) for k,v in  matcher.findall(fn)}\
+    fn_to_nums = {fn: {k: (float(v) if len(v) > 0 else 0.) for k,v in  matcher.findall(fn)}\
             for fn in filenames}
+
+    if verbose:
+        print(fn_to_nums)
 
     num_numbers = map(len, fn_to_nums.itervalues())
     assert min(num_numbers) == max(num_numbers), "Amount of numbers varies"
@@ -80,9 +87,15 @@ def sorted_filename(filenames, first=[], last=[],
 
     order = first + order + last
 
+    if verbose:
+        print("Final order:", order)
+
     for i in xrange(-1, -len(order)-1, -1):
         filenames = sorted(filenames, key=lambda fn: fn_to_nums[fn][order[i]],
                 reverse=reverse_key[order[i]])
+        if verbose:
+            print(">> Filenames after sorting by:", order[i])
+            pprint(filenames)
 
     return filenames
 
@@ -93,5 +106,6 @@ if __name__ == '__main__':
     for filename in sorted_filename(args["FILENAME"],
             first=args["--first"], last=args["--last"],
             reverse=args["--reverse"],
-            reverse_all=args["--reverse-all"]):
+            reverse_all=args["--reverse-all"],
+            verbose=args["--verbose"]):
         print(filename)
