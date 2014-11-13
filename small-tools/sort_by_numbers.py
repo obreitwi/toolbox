@@ -48,7 +48,8 @@ __version__ = "0.0.2"
 
 def sorted_filename(filenames, first=[], last=[],
         reverse=[], reverse_all=False, verbose=False):
-    matcher = re.compile("([^-/_]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
+    # matcher = re.compile("([^-/_]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
+    matcher = re.compile("([^-/]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
 
     fn_to_nums = {fn: {k: (float(v) if len(v) > 0 else 0.) for k,v in  matcher.findall(fn)}\
             for fn in filenames}
