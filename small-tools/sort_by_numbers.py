@@ -45,14 +45,27 @@ Options:
 
 __version__ = "0.0.2"
 
+_matcher = re.compile("([^-/]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?|[A-Za-z]+)(?:-|$|/)")
+
+
+def parse_filenames_for_numbers(filenames):
+    retval = {}
+    for fn in filenames:
+        for k,v in matcher.findall(fn):
+            try:
+                v = float(v)
+            except ValueError:
+                v = hash(v)
+            retval[k] = v
+    return retval
+
 
 def sorted_filename(filenames, first=[], last=[],
         reverse=[], reverse_all=False, verbose=False):
     # matcher = re.compile("([^-/_]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
-    matcher = re.compile("([^-/]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
-
-    fn_to_nums = {fn: {k: (float(v) if len(v) > 0 else 0.) for k,v in  matcher.findall(fn)}\
-            for fn in filenames}
+    # fn_to_nums = {fn: {k: (float(v) if len(v) > 0 else 0.) for k,v in matcher.findall(fn)}\
+            # for fn in filenames}
+    fn_to_nums = fn_to_nums(filenames)
 
     if verbose:
         print(fn_to_nums)
