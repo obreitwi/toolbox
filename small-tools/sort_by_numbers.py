@@ -51,13 +51,17 @@ _matcher = re.compile("([^-/]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?|[A-Za-z]+)(?:-|$|/
 def parse_filenames_for_numbers(filenames):
     retval = {}
     for fn in filenames:
-        for k,v in matcher.findall(fn):
+        fn_nums = retval[fn] = {}
+        for k,v in _matcher.findall(fn):
             try:
                 v = float(v)
             except ValueError:
                 v = hash(v)
-            retval[k] = v
+            fn_nums[k] = v
     return retval
+
+def get_order(filename):
+    return [m[0] for m in _matcher.findall(filenames[0])]
 
 
 def sorted_filename(filenames, first=[], last=[],
@@ -65,7 +69,7 @@ def sorted_filename(filenames, first=[], last=[],
     # matcher = re.compile("([^-/_]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?)(?:-|$|/)")
     # fn_to_nums = {fn: {k: (float(v) if len(v) > 0 else 0.) for k,v in matcher.findall(fn)}\
             # for fn in filenames}
-    fn_to_nums = fn_to_nums(filenames)
+    fn_to_nums = parse_filenames_for_numbers(filenames)
 
     if verbose:
         print(fn_to_nums)
@@ -93,7 +97,7 @@ def sorted_filename(filenames, first=[], last=[],
     for rk in reverse:
         reverse_key[rk] = not reverse_key[rk]
 
-    order = [m[0] for m in matcher.findall(filenames[0])]
+    order = get_order(filenames[0])
 
     # remove items from the order that are specified
     for v in it.chain(first, last):
@@ -123,3 +127,4 @@ if __name__ == '__main__':
             reverse_all=args["--reverse-all"],
             verbose=args["--verbose"]):
         print(filename)
+
