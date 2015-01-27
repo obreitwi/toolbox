@@ -61,7 +61,7 @@ def parse_filenames_for_numbers(filenames):
     return retval
 
 def get_order(filename):
-    return [m[0] for m in _matcher.findall(filenames[0])]
+    return [m[0] for m in _matcher.findall(filename)]
 
 
 def sorted_filename(filenames, first=[], last=[],
