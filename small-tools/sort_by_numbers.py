@@ -43,7 +43,7 @@ Options:
 
 """.format(prgm=osp.basename(sys.argv[0]))
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 _matcher = re.compile("([^-/]+?)_(\d+\.?\d*(?:e(?:\+|-|)\d+)?|[A-Za-z]+)(?:-|$|/)")
 
