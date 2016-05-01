@@ -115,7 +115,8 @@ class RPushHandler(object):
     def cmd_list(self):
         # for i,f in enumerate( self.list_complete_directory()):
         for i,f in enumerate(self.get_complete_remote_content()):
-            print("[{0}]\t{1}\t{2}/{1}".format(i, f, self.url))
+            print("[{0}]\t'{1}'\t{2}/{3}".format(
+                i, f, self.url, urllib.quote(f)))
 
     def cmd_clean(self):
         complete_content = self.get_complete_remote_content()
