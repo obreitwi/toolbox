@@ -28,7 +28,7 @@ Options:
 
 from __future__ import print_function
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 import os
 import os.path as osp
@@ -37,8 +37,6 @@ import subprocess as sp
 
 import random
 import string
-
-import shlex
 
 import itertools
 
@@ -51,9 +49,12 @@ logging.basicConfig(
 if sys.version_info < (3, 0):
     import ConfigParser as configparser
     import urllib
+    from pipes import quote as shell_quote
+
 else:
     import configparser
     import urllib.parse as urllib
+    from shlex import quote as shell_quote
 
 # much inspiration to be taken from:
 # http://code.activestate.com/recipes/576810-copy-files-over-ssh-using-paramiko/
@@ -100,14 +101,15 @@ class RPushHandler(object):
             sys.exit(1)
 
     def cmd_push(self):
-        for f_in, f_out in itertools.chain(zip(self.args[ "<file>" ], self.args[ "<file>" ]),
-                                zip(self.args[ "<file_in>" ], self.args[ "<file_out>" ])):
+        for f_in, f_out in itertools.chain(
+                zip(self.args[ "<file>" ], self.args[ "<file>" ]),
+                zip(self.args[ "<file_in>" ], self.args[ "<file_out>" ])):
             rfolder = random_string()
-            self.run_ssh_command("mkdir "+ shlex.quote(rfolder))
+            self.run_ssh_command("mkdir "+ shell_quote(rfolder))
             path = osp.join(rfolder, os.path.basename(f_out))
             self.run_scp_command(f_in, path)
             self.run_ssh_command("chown :{1} {0} && chmod g+r {0}".format(
-                shlex.quote(path), self.www_group))
+                shell_quote(path), self.www_group))
 
             print(self.encode_url(path))
             #  print( "{0}/{1}".format(self.url, path))
@@ -132,13 +134,13 @@ class RPushHandler(object):
     def remove_remote(self, path):
         folder, file = osp.split(path)
 
-        self.run_ssh_command("rm " + shlex.quote(path))
-        self.run_ssh_command("rmdir " + shlex.quote(folder))
+        self.run_ssh_command("rm " + shell_quote(path))
+        self.run_ssh_command("rmdir " + shell_quote(folder))
 
     def run_ssh_command(self, command):
         logging.debug(command)
         return self.ssh_exec(self.ssh_args
-            + ["cd {0} && {1}".format(shlex.quote(self.basefolder), command)])
+            + ["cd {0} && {1}".format(shell_quote(self.basefolder), command)])
 
     def run_scp_command(self, path_from, path_to):
         logging.debug( "SCP: {0} -> {1}".format(path_from, path_to))
