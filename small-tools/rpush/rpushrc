@@ -1,9 +1,0 @@
-
-[RPush]
-host      = root
-folder    = /var/www/default/tmpodrom
-url       = http://zqnr.de/tmpodrom
-# group needed to publish web documents
-www-group = www-data
-
-
