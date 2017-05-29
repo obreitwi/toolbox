@@ -2,7 +2,7 @@
 
 PATH_DIR=$HOME/.local/bin
 
-git clone https://github.com/joeyh/myrepos.git mr
+git clone https://git.joeyh.name/git/myrepos.git mr
 mkdir -p ~/.local/bin
 ln -s -f -v $(pwd)/mr/mr $PATH_DIR/mr
 
