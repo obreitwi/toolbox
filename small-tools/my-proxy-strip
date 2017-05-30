@@ -1,0 +1,11 @@
+#!/usr/bin/zsh
+
+PROXY="$1"
+HOST="$2"
+PORT="$3"
+# if last character is upper case, strip it from hostname
+if (echo "$HOST" | grep "\\-[a-z]$" -q); then
+    HOST="${HOST[0,-3]}"
+fi
+exec nc -x "$PROXY" "$HOST" "$PORT"
+
