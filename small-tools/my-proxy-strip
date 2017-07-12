@@ -3,7 +3,7 @@
 PROXY="$1"
 HOST="$2"
 PORT="$3"
-# if last character is upper case, strip it from hostname
+# if hostname ends in "-[a-z]" strip it
 if (echo "$HOST" | grep "\\-[a-z]$" -q); then
     HOST="${HOST[0,-3]}"
 fi
