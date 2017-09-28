@@ -3,9 +3,13 @@
 PROXY="$1"
 HOST="$2"
 PORT="$3"
+TYPE=$([ $# -gt 3 ] && echo $4 || echo 5)
+echo $TYPE
 # if hostname ends in "-[a-z]" strip it
 if (echo "$HOST" | grep "\\-[a-z]$" -q); then
     HOST="${HOST[0,-3]}"
 fi
-exec nc -x "$PROXY" "$HOST" "$PORT"
+# resolve hostname using ssh
+IP=$(ssh -G root | grep -i "^hostname" | cut -d ' ' -f 2)
+exec nc -X $TYPE -x $PROXY $IP $PORT
 
