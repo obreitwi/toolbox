@@ -2,3 +2,5 @@ set history filename ~/.gdb_history
 set history save
 set print pretty on
 set print array on
+set listsize 20
+set auto-load safe-path /
