@@ -104,19 +104,10 @@ def get_compile_unit(filename):
 
 
 def FlagsForFile(filename):
-    debug_file = "/wang/users/obreitwi/cluster_home/ycm-debug.log"
-    with open(debug_file, "a") as f:
-        f.write("Requesting flags for {}".format(filename))
-
     if is_header(filename):
         filename = get_source_file(filename)
-        with open(debug_file, "a") as f:
-            f.write(" -> {}".format(filename))
 
     flags = compilation_db.get(filename, [])
-
-    with open(debug_file, "a") as f:
-        f.write(": {}\n".format(", ".join(flags)))
 
     return { "flags" : DEFAULT_FLAGS + flags }
 
