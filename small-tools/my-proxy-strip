@@ -1,15 +1,16 @@
 #!/usr/bin/zsh
 
-PROXY="$1"
-HOST="$2"
-PORT="$3"
+PROXY="${1}"
+HOST="${2}"
+PORT="${3}"
 TYPE=$([ $# -gt 3 ] && echo $4 || echo 5)
 # if hostname ends in "-[a-z]" strip it
-if (echo "$HOST" | grep "\\-[a-z]$" -q); then
+if (echo "${HOST}" | grep "\\-[a-z]$" -q); then
     HOST="${HOST[0,-3]}"
 fi
 # resolve hostname using ssh
 IP=$(ssh -G $HOST | grep -i "^hostname" | cut -d ' ' -f 2)
-echo exec nc -X $TYPE -x $PROXY $IP $PORT
-exec nc -X $TYPE -x $PROXY $IP $PORT
+CMD="nc -X ${TYPE} -x ${PROXY} ${IP} ${PORT}"
+echo "Executing: ${CMD}"
+eval exec ${CMD}
 
