@@ -1,5 +1,32 @@
 #!/usr/bin/zsh
+#
+# my-proxy-strip: Strip "-[a-z]" from hostname before involving proxy.
+#
+# Copyright (C) 2013-2018 Oliver Breitwieser
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#
+# Tool allows you to configure dynamic proxy connections in .ssh/config via:
+#
+# ```
+# Host *-p
+#   ProxyCommand my-proxy-strip <proxy>:<port> %h %p
+# ```
+#
+# Just replace <proxy> and <port> with your values!
+#
 PROXY="${1}"
 HOST="${2}"
 PORT="${3}"
@@ -9,7 +36,7 @@ if (echo "${HOST}" | grep "\\-[a-z]$" -q); then
     HOST="${HOST[0,-3]}"
 fi
 # resolve hostname using ssh
-IP=$(ssh -G $HOST | grep -i "^hostname" | cut -d ' ' -f 2)
+IP=$(ssh -G $HOST | awk 'tolower($1) ~ /^hostname/ { print $2 }')
 CMD="nc -X ${TYPE} -x ${PROXY} ${IP} ${PORT}"
 echo "Executing: ${CMD}"
 eval exec ${CMD}
