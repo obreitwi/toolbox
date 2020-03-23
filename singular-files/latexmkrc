@@ -1,2 +1,2 @@
-$pdflatex = 'pdflatex --shell-escape %O %S';
-
+$latex = 'latex  %O  --shell-escape %S';
+$pdflatex = 'pdflatex -shell-escape %O %S';
