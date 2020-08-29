@@ -38,6 +38,7 @@ fi
 # resolve hostname using ssh
 IP=$(ssh -G $HOST | awk 'tolower($1) ~ /^hostname/ { print $2 }')
 CMD="nc -X ${TYPE} -x ${PROXY} ${IP} ${PORT}"
+# CMD="ssh -W ${PROXY} ${IP} -p ${PORT}"
 echo "Executing: ${CMD}"
 eval exec ${CMD}
 
