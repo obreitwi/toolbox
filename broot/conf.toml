@@ -71,8 +71,11 @@ execution = "git diff {file}"
 #  execution = "less {file}"
 [[verbs]]
 name = "view"
+key = "ctrl-v"
 invocation = "view"
-execution = "bat {file}"
+leave_broot = false
+apply_to = "file"
+external = "bat --paging=always {file}"
 
 # A popular set of shorctuts for going up and down:
 #
