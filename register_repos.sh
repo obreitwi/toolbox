@@ -36,6 +36,6 @@ register_repo git@github.com:obreitwi/pydemx.git pydemx
 register_repo git@github.com:obreitwi/dot_vim.git vim
 register_repo git@github.com:obreitwi/dot_zsh.git zsh
 register_repo git@github.com:obreitwi/dot_tmux.git tmux
-register_repo git@github.com:obreitwi/rpush.git small-tools/rpush
+register_repo git@github.com:obreitwi/py-rpush.git small-tools/rpush
 
 
