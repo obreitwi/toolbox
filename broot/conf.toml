@@ -77,6 +77,12 @@ leave_broot = false
 apply_to = "file"
 external = "bat --paging=always {file}"
 
+[[verbs]]
+name = "preview"
+key = "ctrl-p"
+invocation = "tp"
+internal = ":toggle_preview"
+
 # A popular set of shorctuts for going up and down:
 #
 [[verbs]]
