@@ -4,14 +4,34 @@ FILENAME="$0"
 
 usage() {
 cat <<EOF
-Usage: ${FILENAME} [--duplex] [--config=<config>] [--folder=$PWD] [--name=<filename>]
+Usage:
+    ${FILENAME} [OPTIONS] (--create | --edit | [--folder=$PWD] [--name=<filename>] | -p <full path> | --path=<full path>)
 
+Description:
     Wrap epsonscan2 on the command line for a sane experience.
+
+Options:
+    -c --config=<config>    Which config file to operate on.
+    --no-duplex             Disable duplex.
+    --create                Create config.
+    --edit                  Edit config.
+    --remove                Remove file prior to scanning.
 EOF
 }
 
 zmodload zsh/zutil
-zparseopts -D -E - h=arg_help -help=arg_help -duplex=arg_duplex -folder:=arg_folder -name:=arg_name -config:=arg_config \
+zparseopts -D -E - h=arg_help -help=arg_help \
+    c:=arg_config \
+    -config:=arg_config \
+    -no-duplex=arg_no_duplex \
+    -folder:=arg_folder \
+    -name:=arg_name \
+    p:=arg_path \
+    -path:=arg_path \
+    -remove=arg_remove \
+    -create=arg_create \
+    -edit=arg_edit
+
 
 alias clear_color='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"'
 
@@ -38,8 +58,31 @@ fi
 
 if (( ${#arg_config} > 1 )); then
     config="${arg_config[-1]}"
+    config="${config%.SF2}.SF2"
+    if ! [ -f "${config}" ]; then
+        config="${HOME}/.config/epsonscan2/${config}"
+    fi
 else
     config="$HOME/.config/epsonscan2/DefaultSettings.SF2"
+fi
+
+if [ -n "${arg_create}" ]; then
+    tmpdir="${TMPDIR:-/tmp}"
+    (cd "${tmpdir}" && epsonscan2 -c) || exit 1
+    mv "${tmpdir}/DefaultSettings.SF2" "${config}"
+    echo "Created: ${config}" >&2
+    exit 0
+fi
+
+if [ -n "${arg_edit}" ]; then
+    epsonscan2 --edit "${config}"
+    exit 0
+fi
+
+if (( ( ${#arg_name} > 1 || ${#arg_folder} > 1 ) && ${#arg_path} > 1 )) \
+    || (( ( ${#arg_name} <= 1 || ${#arg_folder} <= 1 ) && ${#arg_path} <= 1 )); then
+    echo "ERROR: Please specify either --folder/--name OR --path." >&2
+    exit 1
 fi
 
 if (( ${#arg_folder} > 1 )); then
@@ -54,11 +97,34 @@ else
     filename="scan"
 fi
 
-if [ -n "${arg_duplex}" ]; then
-    duplex=1
-else
-    duplex=0
+if (( ${#arg_path} > 1 )); then
+    filename="$(basename "${arg_path[-1]}")"
+    folder="$(dirname "$(readlink -m "${arg_path[-1]}")")"
 fi
+
+if [ -n "${arg_no_duplex}" ]; then
+    duplex=0
+else
+    duplex=1
+fi
+
+if [ -n "${arg_remove}" ]; then
+    remove=1
+else
+    remove=0
+fi
+
+filename_full="${folder}/${filename}.pdf"
+
+if [ -f "${filename_full}" ]; then
+    if (( remove > 0 )); then
+        rm -v "${filename_full}"
+    else
+        echo "ERROR: ${filename_full} already exists.." >&2
+        exit 1
+    fi
+fi
+
 
 file_jq_filter=$(mktemp jq-filter-XXXXXXXX.jq)
 file_epsonscan_cfg=$(mktemp epsonscan2-XXXXXXXX.SF2)
@@ -70,9 +136,16 @@ file_epsonscan_cfg=$(mktemp epsonscan2-XXXXXXXX.SF2)
 EOF
 
 TRAPEXIT() {
-    rm -v "${file_jq_filter}" "${file_epsonscan_cfg}"
+    rm "${file_jq_filter}" "${file_epsonscan_cfg}"
 }
 
 jq -f "${file_jq_filter}" <"${config}" >"${file_epsonscan_cfg}"
 
+if ! [ -e "${folder}" ]; then
+    mkdir -p "${folder}"
+fi
+
 epsonscan2 -s "${file_epsonscan_cfg}"
+
+echo "Opening: ${filename_full}" >&2
+xdg-open "${filename_full}"
