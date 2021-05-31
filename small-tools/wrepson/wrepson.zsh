@@ -12,8 +12,9 @@ Description:
 
 Options:
     -c --config=<config>    Which config file to operate on.
-    --no-duplex             Disable duplex.
+    -D --no-duplex          Disable duplex.
     --create                Create config.
+    --dpi                   Overwrite DPI settings.
     --edit                  Edit config.
     --remove                Remove file prior to scanning.
 EOF
@@ -21,16 +22,18 @@ EOF
 
 zmodload zsh/zutil
 zparseopts -D -E - h=arg_help -help=arg_help \
-    c:=arg_config \
     -config:=arg_config \
-    -no-duplex=arg_no_duplex \
+    -create=arg_create \
+    -dpi:=arg_dpi \
+    -edit=arg_edit \
     -folder:=arg_folder \
     -name:=arg_name \
-    p:=arg_path \
+    -no-duplex=arg_no_duplex \
     -path:=arg_path \
     -remove=arg_remove \
-    -create=arg_create \
-    -edit=arg_edit
+    D=arg_no_duplex \
+    c:=arg_config \
+    p:=arg_path
 
 
 alias clear_color='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"'
@@ -128,16 +131,27 @@ fi
 
 file_jq_filter=$(mktemp jq-filter-XXXXXXXX.jq)
 file_epsonscan_cfg=$(mktemp epsonscan2-XXXXXXXX.SF2)
-
->"${file_jq_filter}" <<EOF
-.["Preset"][0]["0"][0]["UserDefinePath"]["string"] = "${folder}" |\
-.["Preset"][0]["0"][0]["FileNamePrefix"]["string"] = "${filename}" |\
-.["Preset"][0]["0"][0]["DuplexType"]["int"] = "${duplex}"
-EOF
+echo -n ".">"${file_jq_filter}"
 
 TRAPEXIT() {
     rm "${file_jq_filter}" "${file_epsonscan_cfg}"
 }
+
+append_filter() {
+    echo -n " | $* " >> "${file_jq_filter}"
+}
+# Usage: filter_set_value <name> <type> <value>
+filter_set_value() {
+    append_filter ".[\"Preset\"][0][\"0\"][0][\"${1}\"][\"${2}\"] = \"${3}\""
+}
+
+filter_set_value UserDefinePath string "${folder}"
+filter_set_value FileNamePrefix string "${filename}"
+filter_set_value DuplexType int "${duplex}"
+
+if (( ${#arg_dpi} > 1 )); then
+    filter_set_value Resolution int "${arg_dpi[-1]}"
+fi
 
 jq -f "${file_jq_filter}" <"${config}" >"${file_epsonscan_cfg}"
 
