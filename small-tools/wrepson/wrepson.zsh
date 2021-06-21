@@ -37,7 +37,7 @@ zparseopts -D -E - h=arg_help -help=arg_help \
     p:=arg_path \
     x=arg_test
 
-if [ -n "${arg_no_duplex}" ]; then
+if [ -n "${arg_test}" ]; then
     set -x
 fi
 
