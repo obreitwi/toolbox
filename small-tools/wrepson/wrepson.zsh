@@ -13,6 +13,7 @@ Description:
 Options:
     -c --config=<config>    Which config file to operate on.
     -D --no-duplex          Disable duplex.
+    -x                      Run with debug output enabled.
     --create                Create config.
     --dpi                   Overwrite DPI settings.
     --edit                  Edit config.
@@ -33,8 +34,12 @@ zparseopts -D -E - h=arg_help -help=arg_help \
     -remove=arg_remove \
     D=arg_no_duplex \
     c:=arg_config \
-    p:=arg_path
+    p:=arg_path \
+    x=arg_test
 
+if [ -n "${arg_no_duplex}" ]; then
+    set -x
+fi
 
 alias clear_color='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"'
 
