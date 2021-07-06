@@ -10,3 +10,4 @@ def configure(repl):
     repl.vi_mode = True
     repl.color_depth = "DEPTH_24_BIT"
     repl.vi_start_in_navigation_mode = True
+    repl.prompt_style = "ipython"
