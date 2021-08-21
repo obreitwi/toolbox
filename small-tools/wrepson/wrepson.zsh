@@ -110,6 +110,8 @@ if (( ${#arg_path} > 1 )); then
     folder="$(dirname "$(readlink -m "${arg_path[-1]}")")"
 fi
 
+filename="${filename:r}.pdf"
+
 if [ -n "${arg_no_duplex}" ]; then
     duplex=0
 else
@@ -122,13 +124,14 @@ else
     remove=0
 fi
 
-filename_full="${folder}/${filename}.pdf"
+filename_full="${folder}/${filename}"
 
 if [ -f "${filename_full}" ]; then
     if (( remove > 0 )); then
         rm -v "${filename_full}"
     else
-        echo "ERROR: ${filename_full} already exists.." >&2
+        echo "ERROR: ${filename_full} already exists, opening…" >&2
+        xdg-open "${filename_full}"
         exit 1
     fi
 fi
@@ -151,7 +154,7 @@ filter_set_value() {
 }
 
 filter_set_value UserDefinePath string "${folder}"
-filter_set_value FileNamePrefix string "${filename}"
+filter_set_value FileNamePrefix string "${filename:r}"
 filter_set_value DuplexType int "${duplex}"
 
 if (( ${#arg_dpi} > 1 )); then
