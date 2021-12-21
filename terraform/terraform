@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# disable ctrl-c (SIGINT) and ctrl-z (SIGTSTP) while running terraform to avoid
+# dangling locks
+trap '' SIGINT
+trap '' SIGTSTP
+/usr/bin/terraform "$@"
