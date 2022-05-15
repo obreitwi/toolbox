@@ -4,4 +4,4 @@
 # dangling locks
 trap '' SIGINT
 trap '' SIGTSTP
-/usr/bin/terraform "$@"
+exec /usr/bin/terraform "$@"
