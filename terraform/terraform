@@ -4,4 +4,4 @@
 # dangling locks
 trap '' SIGINT
 trap '' SIGTSTP
-exec /usr/bin/terraform "$@"
+exec $HOME/.local/bin/tf-pinned "$@"
