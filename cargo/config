@@ -1,5 +1,8 @@
 [target.x86_64-unknown-linux-gnu]
 rustflags = ["-Ctarget-cpu=native"]
 
+[registries.crates-io]
+protocol = "sparse"
+
 [build]
 rustc-wrapper = "/usr/bin/sccache"
