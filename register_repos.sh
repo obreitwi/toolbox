@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-set -x
+set -Eeuo pipefail
 
 register_repo()
 {
