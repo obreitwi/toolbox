@@ -107,6 +107,23 @@ execution = ":page_up"
 key = "ctrl-g"
 execution = ":toggle_git_status"
 
+[[verbs]]
+key = "ctrl-l"
+execution = ":panel_right"
+
+[[verbs]]
+key = "ctrl-h"
+execution = ":panel_left_no_open"
+
+[[verbs]]
+key = "<"
+execution = ":up_tree"
+
+[[verbs]]
+key = "ctrl-m"
+internal = ":move_to_panel"
+
+#
 ###############################################################
 # Skin
 # If you want to change the colors of broot,
